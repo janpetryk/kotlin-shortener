@@ -23,8 +23,9 @@ class LinkRepositoryTest {
 
     @Test
     fun testSave() {
-        linkRepository.save(Link(originalUrl = "http://onet.pl", redirectHash = "asd"))
-        assertThat(linkRepository.count()).isEqualTo(1)
+        val savedLink = linkRepository.save(Link(originalUrl = "http://onet.pl", redirectHash = "asd"))
+        val linkFromDb = linkRepository.findOne(savedLink.id)
+        assertThat(savedLink).isEqualTo(linkFromDb)
     }
 
     @Test(expected = DataIntegrityViolationException::class)
