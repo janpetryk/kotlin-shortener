@@ -40,4 +40,14 @@ class LinkRepositoryTest {
         linkRepository.save(Link(originalUrl = "", redirectHash = redirectHash))
         assertThat(linkRepository.existsByRedirectHash(redirectHash)).isTrue()
     }
+
+    @Test
+    fun findByRedirectHash(){
+        val redirectHash = "uiop"
+        val originalUrl = "http://interia.pl"
+        linkRepository.save(Link(originalUrl = originalUrl, redirectHash = redirectHash))
+        val linkFromDb = linkRepository.findByRedirectHash(redirectHash)
+        assertThat(linkFromDb).isNotNull();
+        assertThat(linkFromDb?.originalUrl).isEqualTo(originalUrl);
+    }
 }

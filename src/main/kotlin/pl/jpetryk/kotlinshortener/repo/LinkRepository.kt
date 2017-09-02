@@ -7,4 +7,6 @@ interface LinkRepository : CrudRepository<Link, Long> {
 
     fun existsByRedirectHash(redirectHash: String): Boolean
 
+    fun findByRedirectHash(redirectHash: String): Link?
+
 }
