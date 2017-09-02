@@ -5,8 +5,8 @@ import javax.persistence.*
 @Entity
 class Link(
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
-        var id: Long = 0,
-        var originalUrl: String = "",
+        val id: Long = 0,
+        val originalUrl: String = "",
         @Column(unique = true)
-        var redirectHash: String = ""
+        val redirectHash: String = ""
 )
