@@ -33,7 +33,7 @@ class LinkResourceTest {
 
     @Test
     fun createLink() {
-        val redirectHash = "asd"
+        val redirectHash = "uooo"
         val originalUrl = "http://onet.pl"
         val response = linkResource.createLink(LinkDto(originalUrl = originalUrl, redirectHash = redirectHash))
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
@@ -46,7 +46,7 @@ class LinkResourceTest {
     @Test
     fun createTwoLinksWithSameHash() {
         val numberOfLinksCreatedBefore = linkRepository.count();
-        val redirectHash = "asd"
+        val redirectHash = "hash34"
         val response = linkResource.createLink(LinkDto(originalUrl = "http://wp.pl", redirectHash = redirectHash))
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
         val duplicatedResponse = linkResource.createLink(LinkDto(originalUrl = "http://wp.pl", redirectHash = redirectHash))

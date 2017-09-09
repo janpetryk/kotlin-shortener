@@ -25,14 +25,14 @@ class RedirectResourceTest {
 
     @Test
     fun linkWithWrongHash() {
-        val response = redirectResource.redirect("asd")
+        val response = redirectResource.redirect("hashnotexisting")
         assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @Test
     fun testRedirect() {
         val originalUrl = "http://onet.pl"
-        val redirectHash = "asdaa"
+        val redirectHash = "redirectHash"
         linkRepository.save(Link(originalUrl = originalUrl, redirectHash = redirectHash))
         val response = redirectResource.redirect(redirectHash)
         assertThat(response.statusCode).isEqualTo(HttpStatus.FOUND)

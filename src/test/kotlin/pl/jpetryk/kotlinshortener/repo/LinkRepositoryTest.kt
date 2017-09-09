@@ -36,7 +36,7 @@ class LinkRepositoryTest {
 
     @Test
     fun testIfHashExists() {
-        val redirectHash = "uiop"
+        val redirectHash = "uiooop"
         linkRepository.save(Link(originalUrl = "", redirectHash = redirectHash))
         assertThat(linkRepository.existsByRedirectHash(redirectHash)).isTrue()
     }
