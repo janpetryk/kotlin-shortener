@@ -8,10 +8,10 @@ import pl.jpetryk.kotlinshortener.domain.Link
 import pl.jpetryk.kotlinshortener.model.LinkDto
 import pl.jpetryk.kotlinshortener.repo.LinkRepository
 
-@Controller("/links")
+@Controller
 class LinkResource(val linkRepository: LinkRepository) {
 
-    @PostMapping()
+    @PostMapping("/links")
     fun createLink(createLinkRequest: LinkDto): ResponseEntity<Any> {
         if (createLinkRequest.originalUrl.isNullOrEmpty() || createLinkRequest.redirectHash.isNullOrEmpty()) {
             return ResponseEntity(HttpStatus.BAD_REQUEST)

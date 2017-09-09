@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import pl.jpetryk.kotlinshortener.repo.LinkRepository
 
-@Controller("/")
+@Controller
 class RedirectResource(private val linkRepository: LinkRepository) {
 
-    @GetMapping("/{redirectHash}")
+    @GetMapping("/{redirectHash:^(?!index\\.html).*}") //anything but index.html
     fun redirect(@PathVariable("redirectHash") redirectHash: String): ResponseEntity<Any> {
         val dbLink = linkRepository.findByRedirectHash(redirectHash)
         if (dbLink == null) {

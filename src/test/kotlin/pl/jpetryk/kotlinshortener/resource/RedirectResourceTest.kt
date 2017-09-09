@@ -1,32 +1,36 @@
 package pl.jpetryk.kotlinshortener.resource
 
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import pl.jpetryk.kotlinshortener.domain.Link
 import pl.jpetryk.kotlinshortener.repo.LinkRepository
+
 
 @RunWith(SpringRunner::class)
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @SpringBootTest
+@AutoConfigureMockMvc
 class RedirectResourceTest {
-
-    @Autowired
-    private lateinit var redirectResource: RedirectResource
 
     @Autowired
     private lateinit var linkRepository: LinkRepository
 
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
     @Test
     fun linkWithWrongHash() {
-        val response = redirectResource.redirect("hashnotexisting")
-        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        mockMvc.perform(get("/sdfghjkl")).andExpect(status().isNotFound)
     }
 
     @Test
@@ -34,9 +38,17 @@ class RedirectResourceTest {
         val originalUrl = "http://onet.pl"
         val redirectHash = "redirectHash"
         linkRepository.save(Link(originalUrl = originalUrl, redirectHash = redirectHash))
-        val response = redirectResource.redirect(redirectHash)
-        assertThat(response.statusCode).isEqualTo(HttpStatus.FOUND)
-        assertThat(response.headers.get("Location")).contains(originalUrl)
+        mockMvc.perform(get("/$redirectHash"))
+                .andExpect(status().isFound)
+                .andExpect(header().string("Location", originalUrl))
+    }
+
+    @Test
+    fun testIndex() {
+        val value = mockMvc.perform(get("/index.html"))
+                .andExpect(status().is2xxSuccessful)
+                .andReturn()
+        println(value.response.contentAsString)
     }
 
 }
