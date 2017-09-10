@@ -1,42 +1,50 @@
 package pl.jpetryk.kotlinshortener.resource
 
-import org.springframework.beans.factory.annotation.Autowired
-import pl.jpetryk.kotlinshortener.repo.LinkRepository
-
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import pl.jpetryk.kotlinshortener.model.LinkDto
-import org.springframework.http.HttpStatus
+import pl.jpetryk.kotlinshortener.repo.LinkRepository
+
 
 @RunWith(SpringRunner::class)
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @SpringBootTest
+@AutoConfigureMockMvc
 class LinkResourceTest {
 
     @Autowired
-    lateinit var linkRepository: LinkRepository
+    private lateinit var linkRepository: LinkRepository
 
     @Autowired
-    lateinit var linkResource: LinkResource;
+    private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
     @Test
     fun sendBadRequest() {
-        assertThat(linkResource.createLink(LinkDto()).statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
-        assertThat(linkResource.createLink(LinkDto(originalUrl = "http://onet.pl")).statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
-        assertThat(linkResource.createLink(LinkDto(redirectHash = "asd")).statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        performPost("", "").andExpect(status().isBadRequest)
+        performPost("http://onet.pl", "").andExpect(status().isBadRequest)
+        performPost("", "asd").andExpect(status().isBadRequest)
     }
 
     @Test
     fun createLink() {
         val redirectHash = "uooo"
         val originalUrl = "http://onet.pl"
-        val response = linkResource.createLink(LinkDto(originalUrl = originalUrl, redirectHash = redirectHash))
-        assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
+        performPost(originalUrl, redirectHash).andExpect(status().isCreated)
         val linkFromDb = linkRepository.findByRedirectHash(redirectHash)
         assertThat(linkFromDb).isNotNull()
         assertThat(originalUrl).isEqualTo(linkFromDb?.originalUrl)
@@ -47,12 +55,17 @@ class LinkResourceTest {
     fun createTwoLinksWithSameHash() {
         val numberOfLinksCreatedBefore = linkRepository.count();
         val redirectHash = "hash34"
-        val response = linkResource.createLink(LinkDto(originalUrl = "http://wp.pl", redirectHash = redirectHash))
-        assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
-        val duplicatedResponse = linkResource.createLink(LinkDto(originalUrl = "http://wp.pl", redirectHash = redirectHash))
-        assertThat(duplicatedResponse.statusCode).isEqualTo(HttpStatus.CONFLICT)
+        val originalUrl = "http://wp.pl"
+        performPost(originalUrl, redirectHash).andExpect(status().isCreated)
+        performPost(originalUrl, redirectHash).andExpect(status().isConflict)
         assertThat(numberOfLinksCreatedBefore + 1).isEqualTo(linkRepository.count())
 
+    }
+
+    private fun performPost(originalUrl: String, redirectHash: String): ResultActions {
+        return mockMvc.perform(post("/links")
+                .content(objectMapper.writeValueAsString(LinkDto(originalUrl = originalUrl, redirectHash = redirectHash)))
+                .contentType("application/json"))
     }
 
 }
