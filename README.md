@@ -11,4 +11,5 @@ Requires MySQL with following configuration:
 - schema shortener
 - login shortener
 - password shortener
+
 Running: `./mvn spring-boot:run`
