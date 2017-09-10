@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import pl.jpetryk.kotlinshortener.domain.Link
+import pl.jpetryk.kotlinshortener.repo.LinkRepository
 
 import org.assertj.core.api.Assertions.*
 import org.springframework.dao.DataIntegrityViolationException
