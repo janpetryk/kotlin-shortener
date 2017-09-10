@@ -38,6 +38,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-js</artifactId>
+			<version>${kotlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-reflect</artifactId>
 			<version>${kotlin.version}</version>
 		</dependency>
@@ -123,6 +128,58 @@
 						<version>${kotlin.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile-js</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>js</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>${project.basedir}/src/main/kotlin-js</sourceDirs>
+							<outputFile>${project.basedir}/target/classes/static/js/kotlin-shortener.js</outputFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-compile-js</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>test-js</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>${project.basedir}/src/test/kotlin-js</sourceDirs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jetbrains.kotlin</groupId>
+									<artifactId>kotlin-stdlib-js</artifactId>
+									<version>${kotlin.version}</version>
+									<outputDirectory>${project.basedir}/target/classes/static/js/lib</outputDirectory>
+									<includes>*.js</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
