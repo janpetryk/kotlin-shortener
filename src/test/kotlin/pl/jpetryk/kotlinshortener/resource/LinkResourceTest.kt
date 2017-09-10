@@ -43,7 +43,7 @@ class LinkResourceTest {
     fun createLinkWithoutHash() {
         val originalUrl = "http://onet.pl"
         val result = performPost(originalUrl, "").andExpect(status().isCreated).andReturn()
-        val link = objectMapper.readValue(result.response.contentAsString, LinkDto::class.java);
+        val link = objectMapper.readValue(result.response.contentAsString, LinkDto::class.java)
         val linkFromDb = linkRepository.findByRedirectHash(link.redirectHash)
         assertThat(linkFromDb).isNotNull()
         assertThat(originalUrl).isEqualTo(linkFromDb?.originalUrl)
@@ -61,7 +61,7 @@ class LinkResourceTest {
 
     @Test
     fun createTwoLinksWithSameHash() {
-        val numberOfLinksCreatedBefore = linkRepository.count();
+        val numberOfLinksCreatedBefore = linkRepository.count()
         val redirectHash = "hash34"
         val originalUrl = "http://wp.pl"
         performPost(originalUrl, redirectHash).andExpect(status().isCreated)
@@ -74,7 +74,6 @@ class LinkResourceTest {
         return mockMvc.perform(post("/links")
                 .content(objectMapper.writeValueAsString(LinkDto(originalUrl = originalUrl, redirectHash = redirectHash)))
                 .contentType("application/json"))
-        println()
     }
 
 }
