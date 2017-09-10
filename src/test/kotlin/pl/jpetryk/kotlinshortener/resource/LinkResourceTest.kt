@@ -36,19 +36,27 @@ class LinkResourceTest {
     @Test
     fun sendBadRequest() {
         performPost("", "").andExpect(status().isBadRequest)
-        performPost("http://onet.pl", "").andExpect(status().isBadRequest)
         performPost("", "asd").andExpect(status().isBadRequest)
     }
 
     @Test
-    fun createLink() {
+    fun createLinkWithoutHash() {
+        val originalUrl = "http://onet.pl"
+        val result = performPost(originalUrl, "").andExpect(status().isCreated).andReturn()
+        val link = objectMapper.readValue(result.response.contentAsString, LinkDto::class.java);
+        val linkFromDb = linkRepository.findByRedirectHash(link.redirectHash)
+        assertThat(linkFromDb).isNotNull()
+        assertThat(originalUrl).isEqualTo(linkFromDb?.originalUrl)
+    }
+
+    @Test
+    fun createLinkWithSpecifiedHash() {
         val redirectHash = "uooo"
         val originalUrl = "http://onet.pl"
         performPost(originalUrl, redirectHash).andExpect(status().isCreated)
         val linkFromDb = linkRepository.findByRedirectHash(redirectHash)
         assertThat(linkFromDb).isNotNull()
         assertThat(originalUrl).isEqualTo(linkFromDb?.originalUrl)
-        assertThat(redirectHash).isEqualTo(linkFromDb?.redirectHash)
     }
 
     @Test
@@ -66,6 +74,7 @@ class LinkResourceTest {
         return mockMvc.perform(post("/links")
                 .content(objectMapper.writeValueAsString(LinkDto(originalUrl = originalUrl, redirectHash = redirectHash)))
                 .contentType("application/json"))
+        println()
     }
 
 }
