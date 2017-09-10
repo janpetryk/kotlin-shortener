@@ -45,10 +45,8 @@ class RedirectResourceTest {
 
     @Test
     fun testIndex() {
-        val value = mockMvc.perform(get("/index.html"))
+        mockMvc.perform(get("/index.html"))
                 .andExpect(status().is2xxSuccessful)
-                .andReturn()
-        println(value.response.contentAsString)
-    }
 
+    }
 }
