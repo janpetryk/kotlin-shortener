@@ -6,5 +6,9 @@
 Kotlin/JVM, Spring Boot and MySQL based URL shortener.
 
 ## Example Usage
-* Requires MySQL database running on localhost:3306 port, shortener schema, shortener/shortener as login and password.
-* Running: `./mvn spring-boot:run`
+Requires MySQL with following configuration:
+- running on localhost:3306
+- schema shortener
+- login shortener
+- password shortener
+Running: `./mvn spring-boot:run`
