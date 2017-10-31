@@ -11,7 +11,7 @@ import pl.jpetryk.kotlinshortener.repo.LinkRepository
 import pl.jpetryk.kotlinshortener.service.HashGenerator
 
 @Controller
-class LinkResource(val linkRepository: LinkRepository, val hashGenerator: HashGenerator) {
+class LinkResource(private val linkRepository: LinkRepository, private val hashGenerator: HashGenerator) {
 
     @PostMapping(value = "/links", consumes = arrayOf("application/json"))
     fun createLink(@RequestBody createLinkRequest: LinkDto): ResponseEntity<Any> {
