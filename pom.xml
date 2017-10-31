@@ -12,7 +12,7 @@
     <description>Kotlin URL shortener</description>
 
     <modules>
-        <module>js</module>
+        <module>frontend</module>
         <module>backend</module>
     </modules>
 
