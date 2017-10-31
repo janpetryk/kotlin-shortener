@@ -39,6 +39,10 @@
                         <goals>
                             <goal>js</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>${project.basedir}/src/main/kotlin</sourceDirs>
+                            <outputFile>${project.basedir}/target/classes/static/js/shortener.js</outputFile>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
@@ -46,6 +50,9 @@
                         <goals>
                             <goal>test-js</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>${project.basedir}/src/test/kotlin-js</sourceDirs>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
