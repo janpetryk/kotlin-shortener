@@ -65,7 +65,7 @@
                                     <groupId>org.jetbrains.kotlin</groupId>
                                     <artifactId>kotlin-stdlib-js</artifactId>
                                     <version>${kotlin.version}</version>
-                                    <outputDirectory>${project.build.directory}/js/lib</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/classes/static/js</outputDirectory>
                                     <includes>*.js</includes>
                                 </artifactItem>
                             </artifactItems>
