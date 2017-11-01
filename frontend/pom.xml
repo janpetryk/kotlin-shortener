@@ -22,6 +22,11 @@
             <artifactId>kotlin-stdlib-js</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-js</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -51,7 +56,7 @@
                             <goal>test-js</goal>
                         </goals>
                         <configuration>
-                            <sourceDirs>${project.basedir}/src/test/kotlin-js</sourceDirs>
+                            <sourceDirs>${project.basedir}/src/test/kotlin</sourceDirs>
                         </configuration>
                     </execution>
                 </executions>
@@ -75,10 +80,39 @@
                                     <outputDirectory>${project.build.directory}/classes/static/js</outputDirectory>
                                     <includes>*.js</includes>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jetbrains.kotlin</groupId>
+                                    <artifactId>kotlin-test-js</artifactId>
+                                    <version>${kotlin.version}</version>
+                                    <outputDirectory>${project.build.directory}/test-js</outputDirectory>
+                                    <includes>*.js</includes>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- keep the configuration out of the execution so that the bdd goal has access to it -->
+                <configuration>
+                    <jsSrcDir>${project.build.directory}/classes/static/js</jsSrcDir>
+                    <jsTestSrcDir>${project.build.directory}/test-js</jsTestSrcDir>
+                    <preloadSources>
+                        <source>${project.build.directory}/classes/static/js/kotlin.js</source>
+                        <source>${project.build.directory}/test-js/kotlin-test.js</source>
+                    </preloadSources>
+                    <!-- configuration properties will go here -->
+                </configuration>
             </plugin>
         </plugins>
     </build>
